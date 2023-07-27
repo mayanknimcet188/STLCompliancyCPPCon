@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include "graph_node.hpp"
+#include "const_directed_graph_iterator.hpp"
 
 // DIrected Graph Implementation
 template <typename T>
@@ -22,6 +23,21 @@ private:
     std::set<T> get_adjacent_node_values(const typename graph_node<T>::adjacency_list_type &indices) const;
 
 public:
+    // public type aliases
+    using value_type = T;
+    using reference = value_type &;
+    using const_reference = const value_type &;
+    using size_type = size_t;
+    using difference_type = ptrdiff_t;
+
+    // public iterator-related type aliases
+    using iterator = const_directed_graph_iterator<directed_graph>;
+    using const_iterator = const_directed_graph_iterator<directed_graph>;
+    using reverse_iterator = std::reverse_iterator<iterator>;
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+    // using iterator_adjacent_nodes = adjacent_nodes_iterator<directed_graph>;
+    // using reverse_iterator_adjacent_nodes = std::reverse_iterator<iterator_adjacent_nodes>;
+    // using const_reverse_iterator_adjacent_nodes = std::reverse_iterator<const_reverse_iterator_adjacent_nodes>;
     // For an insert to be successful, the value should not be in the graph yet.
     // Returns true if a new node with given value has been added to
     // the graph, and false if there was already a node with the given value.
@@ -219,5 +235,17 @@ bool directed_graph<T>::operator==(const directed_graph &rhs) const
             return false;
     }
     return true;
+}
+
+template <typename T>
+void directed_graph<T>::swap(directed_graph &other) noexcept
+{
+    swap(m_nodes, other.m_nodes);
+}
+
+template <typename T>
+bool directed_graph<T>::operator!=(const directed_graph &rhs) const
+{
+    return !(*this == rhs);
 }
 #endif
