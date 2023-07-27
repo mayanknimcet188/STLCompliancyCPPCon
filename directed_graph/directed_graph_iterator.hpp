@@ -38,6 +38,12 @@ typename directed_graph_iterator<DirectedGraph>::reference directed_graph_iterat
 }
 
 template <typename DirectedGraph>
+typename directed_graph_iterator<DirectedGraph>::pointer directed_graph_iterator<DirectedGraph>::operator->()
+{
+    return &(this->m_nodeIterator->get());
+}
+
+template <typename DirectedGraph>
 directed_graph_iterator<DirectedGraph> &directed_graph_iterator<DirectedGraph>::operator++()
 {
     this->increment();
