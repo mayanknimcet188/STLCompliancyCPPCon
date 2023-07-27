@@ -3,6 +3,8 @@
 #include "graph_node.hpp"
 #include "directed_graph.hpp"
 #include "const_directed_graph_iterator.hpp"
+#include "const_adjacent_nodes_iterator.hpp"
+#include "adjacent_nodes_iterator.hpp"
 
 template <typename T>
 void to_dot(const directed_graph<T> &graph, std::string graph_name)

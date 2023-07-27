@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "graph_node.hpp"
 #include "const_directed_graph_iterator.hpp"
+#include "const_adjacent_nodes_iterator.hpp"
+#include "adjacent_nodes_iterator.hpp"
 
 // DIrected Graph Implementation
 template <typename T>
@@ -42,9 +44,10 @@ public:
     // ctors and assignment operator taking initializer list
     directed_graph(std::initializer_list<T> init);
     directed_graph<T> &operator=(std::initializer_list<T> init);
-    // using iterator_adjacent_nodes = adjacent_nodes_iterator<directed_graph>;
-    // using reverse_iterator_adjacent_nodes = std::reverse_iterator<iterator_adjacent_nodes>;
-    // using const_reverse_iterator_adjacent_nodes = std::reverse_iterator<const_reverse_iterator_adjacent_nodes>;
+    using iterator_adjacent_nodes = adjacent_nodes_iterator<directed_graph>;
+    using const_iterator_adjacent_nodes = const_adjacent_nodes_iterator<directed_graph>;
+    using reverse_iterator_adjacent_nodes = std::reverse_iterator<iterator_adjacent_nodes>;
+    using const_reverse_iterator_adjacent_nodes = std::reverse_iterator<const_iterator_adjacent_nodes>;
 
     // iterators for STL Compliancy
     iterator begin() noexcept;
@@ -65,6 +68,26 @@ public:
 
     const_reverse_iterator crbegin() const noexcept;
     const_reverse_iterator crend() const noexcept;
+
+    // return iterator to the list of adjacent nodes for the given node
+    // return a default constructed iterator as the end iterator if the value is not found
+    iterator_adjacent_nodes begin(const T &node_value) noexcept;
+    iterator_adjacent_nodes end(const T &node_value) noexcept;
+
+    const_iterator_adjacent_nodes begin(const T &node_value) const noexcept;
+    const_iterator_adjacent_nodes end(const T &node_value) const noexcept;
+
+    const_iterator_adjacent_nodes cbegin(const T &node_value) const noexcept;
+    const_iterator_adjacent_nodes cend(const T &node_value) const noexcept;
+
+    reverse_iterator_adjacent_nodes rbegin(const T &node_value) noexcept;
+    reverse_iterator_adjacent_nodes rend(const T &node_value) noexcept;
+
+    const_reverse_iterator_adjacent_nodes rbegin(const T &node_value) const noexcept;
+    const_reverse_iterator_adjacent_nodes rend(const T &node_value) const noexcept;
+
+    const_reverse_iterator_adjacent_nodes crbegin(const T &node_value) const noexcept;
+    const_reverse_iterator_adjacent_nodes crend(const T &node_value) const noexcept;
 
     // For an insert to be successful, the value should not be in the graph yet.
     // Returns true if a new node with given value has been added to
@@ -273,6 +296,84 @@ template <typename T>
 typename directed_graph<T>::const_reverse_iterator directed_graph<T>::crend() const noexcept
 {
     return const_cast<directed_graph *>(this)->rend();
+}
+
+template <typename T>
+typename directed_graph<T>::iterator_adjacent_nodes directed_graph<T>::begin(const T &node_value) noexcept
+{
+    auto iter = find(node_value);
+    if (iter == std::end(m_nodes)) // return a default constructed end iterator
+        return adjacent_nodes_iterator<directed_graph>();
+    return adjacent_nodes_iterator<directed_graph>(std::begin(iter->get_adjacent_node_indices()), this);
+}
+
+template <typename T>
+typename directed_graph<T>::iterator_adjacent_nodes directed_graph<T>::end(const T &node_value) noexcept
+{
+    auto iter = find(node_value);
+    if (iter == std::end(m_nodes)) // return a default constructed end iterator
+        return adjacent_nodes_iterator<directed_graph>();
+    return adjacent_nodes_iterator<directed_graph>(std::end(iter->get_adjacent_node_indices()), this);
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator_adjacent_nodes directed_graph<T>::begin(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->begin(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator_adjacent_nodes directed_graph<T>::end(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->end(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator_adjacent_nodes directed_graph<T>::cbegin(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->begin(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator_adjacent_nodes directed_graph<T>::cend(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->end(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::reverse_iterator_adjacent_nodes directed_graph<T>::rbegin(const T &node_value) noexcept
+{
+    return reverse_iterator(end(node_value));
+}
+
+template <typename T>
+typename directed_graph<T>::reverse_iterator_adjacent_nodes directed_graph<T>::rend(const T &node_value) noexcept
+{
+    return reverse_iterator(begin(node_value));
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator_adjacent_nodes directed_graph<T>::rbegin(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->rbegin(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator_adjacent_nodes directed_graph<T>::rend(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->rend(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator_adjacent_nodes directed_graph<T>::crbegin(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->rbegin(node_value);
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator_adjacent_nodes directed_graph<T>::crend(const T &node_value) const noexcept
+{
+    return const_cast<directed_graph *>(this)->rend(node_value);
 }
 
 template <typename T>
