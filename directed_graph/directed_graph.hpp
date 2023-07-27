@@ -36,6 +36,9 @@ public:
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+    // ctor taking iterator range
+    template <typename Iter>
+    directed_graph(Iter first, Iter last);
     // ctors and assignment operator taking initializer list
     directed_graph(std::initializer_list<T> init);
     directed_graph<T> &operator=(std::initializer_list<T> init);
@@ -80,6 +83,13 @@ public:
 };
 
 #include <set>
+
+template <typename T>
+template <typename Iter>
+directed_graph<T>::directed_graph(Iter first, Iter last)
+{
+    assign(first, last);
+}
 
 template <typename T>
 directed_graph<T>::directed_graph(std::initializer_list<T> init)
