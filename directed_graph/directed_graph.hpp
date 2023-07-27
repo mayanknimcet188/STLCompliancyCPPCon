@@ -53,6 +53,11 @@ public:
     // Returns true if the given edge was erased, false otherwise
     bool erase_edge(const T &from_node_value, const T &to_node_value);
 
+    // assign method
+    template <typename Iter>
+    void assign(Iter first, Iter last);
+    void assign(std::initializer_list<T> init);
+
     void clear() noexcept;
 
     T &operator[](size_t index);
@@ -195,6 +200,21 @@ bool directed_graph<T>::erase_edge(const T &from_node_value, const T &to_node_va
     const size_t to_index = std::distance(std::begin(m_nodes), to);
     from->get_adjacent_node_indices().erase(to_index);
     return true;
+}
+
+template <typename T>
+template <typename Iter>
+void directed_graph<T>::assign(Iter first, Iter last)
+{
+    clear();
+    for (auto iter = first; iter != last; ++iter)
+        insert(*iter);
+}
+
+template <typename T>
+void directed_graph<T>::assign(std::initializer_list<T> init)
+{
+    assign(std::begin(init), std::end(init));
 }
 
 template <typename T>
