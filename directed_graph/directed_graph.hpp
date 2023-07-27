@@ -35,6 +35,10 @@ public:
     using const_iterator = const_directed_graph_iterator<directed_graph>;
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+    // ctors and assignment operator taking initializer list
+    directed_graph(std::initializer_list<T> init);
+    directed_graph<T> &operator=(std::initializer_list<T> init);
     // using iterator_adjacent_nodes = adjacent_nodes_iterator<directed_graph>;
     // using reverse_iterator_adjacent_nodes = std::reverse_iterator<iterator_adjacent_nodes>;
     // using const_reverse_iterator_adjacent_nodes = std::reverse_iterator<const_reverse_iterator_adjacent_nodes>;
@@ -76,6 +80,20 @@ public:
 };
 
 #include <set>
+
+template <typename T>
+directed_graph<T>::directed_graph(std::initializer_list<T> init)
+{
+    assign(std::begin(init), std::end(init));
+}
+
+template <typename T>
+directed_graph<T> &directed_graph<T>::operator=(std::initializer_list<T> init)
+{
+    clear();
+    assign(std::begin(init), std::end(init));
+    return *this;
+}
 
 template <typename T>
 typename directed_graph<T>::nodes_container_type::iterator directed_graph<T>::find(const T &node_value)
