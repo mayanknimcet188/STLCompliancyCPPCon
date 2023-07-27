@@ -41,7 +41,7 @@ int main()
     to_dot(graph, "Graph1");
 
     graph.erase_edge(22, 44);
-    graph.erase(44);
+    graph.erase(std::find(std::begin(graph), std::end(graph), 44));
 
     to_dot(graph, "Graph1");
     return 0;

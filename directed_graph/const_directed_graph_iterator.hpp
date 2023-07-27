@@ -32,7 +32,7 @@ public:
     bool operator==(const const_directed_graph_iterator &rhs) const;
     bool operator!=(const const_directed_graph_iterator &rhs) const;
 
-protected:
+public:
     iterator_type m_nodeIterator;
     const DirectedGraph *m_graph = nullptr;
 
@@ -101,4 +101,17 @@ const_directed_graph_iterator<DirectedGraph> const_directed_graph_iterator<Direc
     decrement();
     return oldIt;
 }
+
+template <typename DirectedGraph>
+bool const_directed_graph_iterator<DirectedGraph>::operator==(const const_directed_graph_iterator &rhs) const
+{
+    return this->m_nodeIterator == rhs.m_nodeIterator;
+}
+
+template <typename DirectedGraph>
+bool const_directed_graph_iterator<DirectedGraph>::operator!=(const const_directed_graph_iterator &rhs) const
+{
+    return this->m_nodeIterator != rhs.m_nodeIterator;
+}
+
 #endif

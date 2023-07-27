@@ -11,7 +11,7 @@
 template <typename T>
 class directed_graph
 {
-private:
+public:
     using nodes_container_type = std::vector<graph_node<T>>;
     nodes_container_type m_nodes;
 
@@ -45,14 +45,36 @@ public:
     // using iterator_adjacent_nodes = adjacent_nodes_iterator<directed_graph>;
     // using reverse_iterator_adjacent_nodes = std::reverse_iterator<iterator_adjacent_nodes>;
     // using const_reverse_iterator_adjacent_nodes = std::reverse_iterator<const_reverse_iterator_adjacent_nodes>;
+
+    // iterators for STL Compliancy
+    iterator begin() noexcept;
+    iterator end() noexcept;
+
+    const_iterator begin() const noexcept;
+    const_iterator end() const noexcept;
+
+    const_iterator cbegin() const noexcept;
+    const_iterator cend() const noexcept;
+
+    // reverse iterators
+    reverse_iterator rbegin() noexcept;
+    reverse_iterator rend() noexcept;
+
+    const_reverse_iterator rbegin() const noexcept;
+    const_reverse_iterator rend() const noexcept;
+
+    const_reverse_iterator crbegin() const noexcept;
+    const_reverse_iterator crend() const noexcept;
+
     // For an insert to be successful, the value should not be in the graph yet.
     // Returns true if a new node with given value has been added to
     // the graph, and false if there was already a node with the given value.
-    bool insert(const T &node_value);
-    bool insert(T &&node_value);
+    std::pair<iterator, bool> insert(const T &node_value);
+    std::pair<iterator, bool> insert(T &&node_value);
 
     // Returns true if the given node value was erased, false otherwise
-    bool erase(const T &node_value);
+    iterator erase(const_iterator pos);
+    iterator erase(const_iterator first, const_iterator last);
 
     // Returns true if the edge was successfully created, false otherwise
     bool insert_edge(const T &from_node_value, const T &to_node_value);
@@ -67,8 +89,11 @@ public:
 
     void clear() noexcept;
 
-    T &operator[](size_t index);
-    const T &operator[](size_t index) const;
+    reference operator[](size_type index);
+    const_reference operator[](size_type index) const;
+
+    reference at(size_type index);
+    const_reference at(size_type index) const;
 
     // Two directed graphs are equal if they have the same nodes and edges.
     // The order in which the nodes and edges have been added does not affect equality.
@@ -164,35 +189,121 @@ size_t directed_graph<T>::size() const noexcept
 }
 
 template <typename T>
-bool directed_graph<T>::insert(T &&node_value)
+typename directed_graph<T>::iterator directed_graph<T>::begin() noexcept
+{
+    return iterator(std::begin(m_nodes), this);
+}
+
+template <typename T>
+typename directed_graph<T>::iterator directed_graph<T>::end() noexcept
+{
+    return iterator(std::end(m_nodes), this);
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator directed_graph<T>::begin() const noexcept
+{
+    return const_cast<directed_graph *>(this)->begin();
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator directed_graph<T>::end() const noexcept
+{
+    return const_cast<directed_graph *>(this)->end();
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator directed_graph<T>::cbegin() const noexcept
+{
+    return const_cast<directed_graph *>(this)->begin();
+}
+
+template <typename T>
+typename directed_graph<T>::const_iterator directed_graph<T>::cend() const noexcept
+{
+    return const_cast<directed_graph *>(this)->end();
+}
+
+template <typename T>
+typename directed_graph<T>::reverse_iterator directed_graph<T>::rbegin() noexcept
+{
+    return reverse_iterator(end());
+}
+
+template <typename T>
+typename directed_graph<T>::reverse_iterator directed_graph<T>::rend() noexcept
+{
+    return reverse_iterator(begin());
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator directed_graph<T>::rbegin() const noexcept
+{
+    return const_cast<directed_graph *>(this)->rbegin();
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator directed_graph<T>::rend() const noexcept
+{
+    return const_cast<directed_graph *>(this)->rend();
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator directed_graph<T>::crbegin() const noexcept
+{
+    return const_cast<directed_graph *>(this)->rbegin();
+}
+
+template <typename T>
+typename directed_graph<T>::const_reverse_iterator directed_graph<T>::crend() const noexcept
+{
+    return const_cast<directed_graph *>(this)->rend();
+}
+
+template <typename T>
+std::pair<typename directed_graph<T>::iterator, bool> directed_graph<T>::insert(T &&node_value)
 {
     auto iter = find(node_value);
     if (iter != std::end(m_nodes))
     {
-        return false; // value is already in the graph, return false.
+        return std::make_pair(iterator(iter, this), false); // value is already in the graph, return false.
     }
     m_nodes.emplace_back(std::move(node_value));
-    return true; // Value successfully added to the graph, return true.
+    return std::make_pair(iterator(--std::end(m_nodes), this), true); // Value successfully added to the graph, return true.
 }
 
 template <typename T>
-bool directed_graph<T>::insert(const T &node_value)
+std::pair<typename directed_graph<T>::iterator, bool> directed_graph<T>::insert(const T &node_value)
 {
     T copy(node_value);
     return insert(std::move(copy));
 }
 
 template <typename T>
-bool directed_graph<T>::erase(const T &node_value)
+typename directed_graph<T>::iterator directed_graph<T>::erase(const_iterator pos)
 {
-    auto iter = find(node_value);
-    if (iter == std::end(m_nodes))
+
+    if (pos.m_nodeIterator == std::end(m_nodes))
     {
-        return false; // Value not in the graph, return false.
+        return iterator(std::end(m_nodes), this); // Value not in the graph, return end iterator.
     }
-    remove_all_links_to(iter);
-    m_nodes.erase(iter);
-    return true;
+
+    remove_all_links_to(pos.m_nodeIterator);
+    return iterator(m_nodes.erase(pos.m_nodeIterator), this);
+}
+
+template <typename T>
+typename directed_graph<T>::iterator directed_graph<T>::erase(const_iterator first, const_iterator last)
+{
+    for (auto iter = first; iter != last; ++iter)
+    {
+        if (iter.m_nodeIterator != std::end(m_nodes))
+        {
+            remove_all_links_to(iter.m_nodeIterator);
+        }
+    }
+
+    return iterator(m_nodes.erase(first.m_nodeIterator, last.m_nodeIterator), this);
 }
 
 template <typename T>
@@ -246,15 +357,27 @@ void directed_graph<T>::assign(std::initializer_list<T> init)
 }
 
 template <typename T>
-T &directed_graph<T>::operator[](size_t index)
+typename directed_graph<T>::reference directed_graph<T>::operator[](size_type index)
 {
     return m_nodes[index].get();
 }
 
 template <typename T>
-const T &directed_graph<T>::operator[](size_t index) const
+typename directed_graph<T>::const_reference directed_graph<T>::operator[](size_type index) const
 {
     return m_nodes[index].get();
+}
+
+template <typename T>
+typename directed_graph<T>::reference directed_graph<T>::at(size_type index)
+{
+    return m_nodes.at(index).get();
+}
+
+template <typename T>
+typename directed_graph<T>::const_reference directed_graph<T>::at(size_type index) const
+{
+    return m_nodes.at(index).get();
 }
 
 template <typename T>
