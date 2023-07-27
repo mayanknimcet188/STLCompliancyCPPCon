@@ -27,6 +27,13 @@ void to_dot(const directed_graph<T> &graph, std::string graph_name)
     std::cout << "}" << std::endl;
 }
 
+// standalone swap function
+template <typename T>
+void swap(directed_graph<T> &first, directed_graph<T> &second)
+{
+    first.swap(second);
+}
+
 // Driver code
 int main()
 {

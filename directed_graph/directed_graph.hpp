@@ -103,6 +103,9 @@ public:
     void swap(directed_graph &other_graph) noexcept;
     size_t size() const noexcept;
 
+    size_type max_size() const noexcept;
+    bool empty() const noexcept;
+
     // Returns a set with the nodes adjacent to the given node.
     std::set<T> get_adjacent_node_values(const T &node_value) const;
 };
@@ -186,6 +189,18 @@ template <typename T>
 size_t directed_graph<T>::size() const noexcept
 {
     return m_nodes.size();
+}
+
+template <typename T>
+typename directed_graph<T>::size_type directed_graph<T>::max_size() const noexcept
+{
+    return m_nodes.max_size();
+}
+
+template <typename T>
+bool directed_graph<T>::empty() const noexcept
+{
+    return m_nodes.empty();
 }
 
 template <typename T>
