@@ -8,19 +8,36 @@ template <typename T>
 void to_dot(const directed_graph<T> &graph, std::string graph_name)
 {
     std::cout << "digraph" << graph_name << "{" << std::endl;
-    for (size_t index = 0; index < graph.size(); ++index)
+    // for (size_t index = 0; index < graph.size(); ++index)
+    // {
+    //     const auto &node_value = graph[index];
+    //     const auto adjacent_nodes = graph.get_adjacent_node_values(node_value);
+    //     if (adjacent_nodes.empty())
+    //     {
+    //         std::cout << node_value << std::endl;
+    //     }
+    //     else
+    //     {
+    //         for (auto &&node : adjacent_nodes)
+    //         {
+    //             std::cout << node_value << " -> " << node << std::endl;
+    //         }
+    //     }
+    // }
+
+    for (auto &&node : graph)
     {
-        const auto &node_value = graph[index];
-        const auto adjacent_nodes = graph.get_adjacent_node_values(node_value);
-        if (adjacent_nodes.empty())
+        const auto b = graph.cbegin();
+        const auto e = graph.cend();
+        if (b == e)
         {
-            std::cout << node_value << std::endl;
+            std::cout << node << std::endl;
         }
         else
         {
-            for (auto &&node : adjacent_nodes)
+            for (auto iter = b; iter != e; ++iter)
             {
-                std::cout << node_value << " -> " << node << std::endl;
+                std::cout << node << " -> " << *iter << std::endl;
             }
         }
     }
