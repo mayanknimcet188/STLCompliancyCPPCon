@@ -27,8 +27,10 @@ void to_dot(const directed_graph<T> &graph, std::string graph_name)
 
     for (auto &&node : graph)
     {
-        const auto b = graph.cbegin();
-        const auto e = graph.cend();
+
+        const auto adjacent_nodes = graph.get_adjacent_node_values(node);
+        const auto b = adjacent_nodes.cbegin();
+        const auto e = adjacent_nodes.cend();
         if (b == e)
         {
             std::cout << node << std::endl;
