@@ -3,27 +3,13 @@
 #include "graph_node.hpp"
 #include "directed_graph.hpp"
 #include "const_directed_graph_iterator.hpp"
+#include "const_adjacent_nodes_iterator.hpp"
+#include "adjacent_nodes_iterator.hpp"
 
 template <typename T>
 void to_dot(const directed_graph<T> &graph, std::string graph_name)
 {
     std::cout << "digraph" << graph_name << "{" << std::endl;
-    // for (size_t index = 0; index < graph.size(); ++index)
-    // {
-    //     const auto &node_value = graph[index];
-    //     const auto adjacent_nodes = graph.get_adjacent_node_values(node_value);
-    //     if (adjacent_nodes.empty())
-    //     {
-    //         std::cout << node_value << std::endl;
-    //     }
-    //     else
-    //     {
-    //         for (auto &&node : adjacent_nodes)
-    //         {
-    //             std::cout << node_value << " -> " << node << std::endl;
-    //         }
-    //     }
-    // }
 
     for (auto &&node : graph)
     {
